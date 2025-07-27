@@ -42,6 +42,11 @@ def draw_frame(
 
     center_y = height // 2
     center_x = width // 2
+    level_bar = f"Amplitude: {amplitude:.2f}"
+    try:
+        stdscr.addstr(0, 2, level_bar, curses.A_DIM)
+    except curses.error:
+        pass
     # 1. Draw expanding waves triggered by beats
     for wave in active_waves:
         ring_top = center_y - len(WAVE_TEMPLATE) // 2 - wave.radius
@@ -56,7 +61,7 @@ def draw_frame(
                 pass
 
     # 2. Draw hand based on amplitude level
-    if amplitude > 0.6:
+    if amplitude > 0.7:
         hand = HAND_FRAMES[1]
     elif amplitude > 0.3:
         hand = HAND_FRAMES[0]

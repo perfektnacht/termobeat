@@ -55,9 +55,11 @@ def main(stdscr: curses.window) -> None:
     user_radius = DEFAULT_RADIUS
     user_ttl = DEFAULT_TTL
     message_timer = 0.0
+    smoothed_amplitude = 0.0
 
     while True:
         amplitude = get_amplitude_band()
+        smoothed_amplitude = (smoothed_amplitude * 0.9) + (amplitude * 0.1)
 
         key = stdscr.getch()
         if key == ord('+') or key == ord('='):
@@ -89,7 +91,7 @@ def main(stdscr: curses.window) -> None:
 
         draw_frame(
             stdscr,
-            amplitude,
+            smoothed_amplitude,
             show_banner,
             active_waves,
             user_radius,
