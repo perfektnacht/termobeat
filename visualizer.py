@@ -14,7 +14,8 @@ def draw_frame(stdscr, amplitude, slashes, user_ttl, show_radius=False):
 
     # Draw slashes falling through the entire screen area
     for s in slashes:
-        if 0 <= s.y < height and 0 <= s.x < width:
+        mid_y = omarchy_y - 1  # just above the banner
+        if 0 <= s.y < mid_y and 0 <= s.x < width:
             try:
                 stdscr.addstr(s.y, s.x, s.char, curses.A_BOLD)
             except curses.error:
