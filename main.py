@@ -10,22 +10,23 @@ from visualizer import draw_frame
 # Target frame rate of the curses UI
 FPS = 30
 # Minimum amplitude considered a beat
-BEAT_THRESHOLD = 0.03  # Lowered for better sensitivity
+BEAT_THRESHOLD = 0.03  # Lower for sensitivity
 
-# Default starting values for user controlled wave properties
-DEFAULT_RADIUS = 3
+# Default lifetime for spawned slashes
 DEFAULT_TTL = 10
 
 
 class Slash:
-    def __init__(self, x, y, char, ttl=8):
+    """Simple falling slash character used for the visual effect."""
+
+    def __init__(self, x: int, y: int, char: str, ttl: int = 8) -> None:
         self.x = x
         self.y = y
         self.char = char
         self.ttl = ttl
 
     def update(self):
-        self.y += 1  # Move down
+        self.y += 1  # Move downward
         self.ttl -= 1
 
     def is_alive(self):
@@ -39,7 +40,6 @@ def main(stdscr: curses.window) -> None:
     stdscr.clear()
 
     active_slashes: list[Slash] = []
-    user_radius = DEFAULT_RADIUS
     user_ttl = DEFAULT_TTL
     message_timer = 0.0
 
@@ -47,13 +47,7 @@ def main(stdscr: curses.window) -> None:
         amplitude = get_amplitude_band()
         key = stdscr.getch()
 
-        if key == ord("+") or key == ord("="):
-            user_radius = min(user_radius + 1, 10)
-            message_timer = time.time()
-        elif key == ord("-") or key == ord("_"):
-            user_radius = max(user_radius - 1, 1)
-            message_timer = time.time()
-        elif key == ord("]"):
+        if key == ord("]"):
             user_ttl = min(user_ttl + 2, 30)
             message_timer = time.time()
         elif key == ord("["):
@@ -74,11 +68,9 @@ def main(stdscr: curses.window) -> None:
 
         draw_frame(
             stdscr,
-            amplitude,
-            amplitude > BEAT_THRESHOLD,
-            active_slashes,
-            user_radius,
-            user_ttl,
+            amplitude=amplitude,
+            slashes=active_slashes,
+            user_ttl=user_ttl,
             show_radius=(time.time() - message_timer < 2),
         )
 

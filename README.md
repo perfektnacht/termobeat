@@ -31,5 +31,4 @@ Press `Ctrl+C` to exit.
 
 Use the following keys at runtime:
 
-- `+` / `-` to adjust the starting wave radius.
-- `[` / `]` to change how long spawned waves stay on screen.
+- `[` / `]` to change how long spawned slashes stay on screen.
