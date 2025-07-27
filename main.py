@@ -23,7 +23,7 @@ from visualizer import draw_frame
 # Target frame rate of the curses UI
 FPS = 30
 # Minimum amplitude considered a beat
-BEAT_THRESHOLD = 0.5  # Adjust this as needed
+BEAT_THRESHOLD = 0.03  # Adjust this as needed
 
 
 @dataclass
