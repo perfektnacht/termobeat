@@ -40,8 +40,11 @@ def main(stdscr: curses.window) -> None:
     stdscr.nodelay(True)
     stdscr.clear()
 
+    height, width = stdscr.getmaxyx()
+    default_ttl = int(height - len(OMARCHY_BANNER) - 1)
+
     active_slashes: list[Slash] = []
-    user_ttl = DEFAULT_TTL
+    user_ttl = default_ttl
     message_timer = 0.0
 
     while True:
@@ -49,7 +52,7 @@ def main(stdscr: curses.window) -> None:
         key = stdscr.getch()
 
         if key == ord("]"):
-            user_ttl = min(user_ttl + 2, 30)
+            user_ttl = min(user_ttl + 2, height)
             message_timer = time.time()
         elif key == ord("["):
             user_ttl = max(user_ttl - 2, 2)
@@ -58,10 +61,10 @@ def main(stdscr: curses.window) -> None:
         if amplitude > BEAT_THRESHOLD:
             num_slashes = int(amplitude * 100)  # spawn more if louder
             for _ in range(num_slashes):
-                x = random.randint(0, curses.COLS - 1)
+                x = random.randint(0, width - 1)
                 y = 0
                 char = random.choice(['|', '/', '\\'])
-                active_slashes.append(Slash(x, y, char))
+                active_slashes.append(Slash(x, y, char, ttl=user_ttl))
 
         for slash in active_slashes:
             slash.update()
