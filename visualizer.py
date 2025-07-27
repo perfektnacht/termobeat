@@ -1,9 +1,7 @@
 import curses
-import math
 from typing import List
 
 from frames import OMARCHY_BANNER
-from utils import draw_top_centered_text
 
 
 class FlameParticle:
@@ -20,59 +18,30 @@ class FlameParticle:
         self.ttl -= 1
 
 
-def draw_frame(
-    stdscr,
-    amplitude: float,
-    waves: List["Wave"],
-    flames: List[FlameParticle],
-    user_radius: int,
-    user_ttl: int,
-    show_radius: bool = False,
-) -> None:
-    """Draw a single visualization frame."""
+def draw_frame(stdscr, amplitude, show_banner, slashes, user_radius, user_ttl, show_radius=False):
     stdscr.clear()
     height, width = stdscr.getmaxyx()
     center_y, center_x = height // 2, width // 2
 
-    # Draw OMARCHY banner fixed at the top center
-    for i, line in enumerate(OMARCHY_BANNER):
-        draw_top_centered_text(stdscr, line, y=1 + i, attr=curses.A_BOLD)
+    if show_banner:
+        bottom_start = height - len(OMARCHY_BANNER)
+        for i, line in enumerate(OMARCHY_BANNER):
+            y = bottom_start + i
+            x = (width - len(line)) // 2
+            try:
+                stdscr.addstr(y, x, line, curses.A_BOLD)
+            except curses.error:
+                continue
 
-    # Draw flame particles
-    for flame in flames:
-        y = center_y + int(round(math.sin(flame.angle) * flame.radius))
-        x = center_x + int(round(math.cos(flame.angle) * flame.radius))
-        try:
-            stdscr.addstr(y, x, "\U0001F525")  # flame emoji
-        except curses.error:
-            continue
+    for s in slashes:
+        if 0 <= s.y < height and 0 <= s.x < width:
+            try:
+                stdscr.addstr(s.y, s.x, s.char, curses.A_BOLD)
+            except curses.error:
+                continue
 
-    # Draw waves
-    for wave in waves:
-        draw_wave_ring(stdscr, center_y, center_x, wave.radius)
-
-    # Display radius and TTL settings
     if show_radius:
-        info = f"Wave Radius: {user_radius} | TTL: {user_ttl}"
+        info = f"Slash TTL: {user_ttl} | Amplitude: {amplitude:.3f}"
         stdscr.addstr(1, (width - len(info)) // 2, info, curses.A_DIM)
 
-    # Display live amplitude
-    amp_display = f"Amplitude: {amplitude:.3f}"
-    stdscr.addstr(0, 2, amp_display, curses.A_DIM)
-
     stdscr.refresh()
-
-
-def draw_wave_ring(stdscr, cy, cx, radius):
-    """Draw a circular ring of ``radius`` around (cx, cy)."""
-    char = '█' if radius < 5 else '*'
-    points = 32
-    for i in range(points):
-        angle = 2 * math.pi * i / points
-        dx = int(round(math.cos(angle) * radius))
-        dy = int(round(math.sin(angle) * radius))
-        y, x = cy + dy, cx + dx
-        try:
-            stdscr.addstr(y, x, char, curses.A_BOLD)
-        except curses.error:
-            continue
