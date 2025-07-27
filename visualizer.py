@@ -1,10 +1,21 @@
 import curses
-from frames import OMARCHY_BANNER, HAND_FRAMES
+from frames import OMARCHY_BANNER, HAND_FRAMES, WAVE_TEMPLATE
 
 
-def draw_frame(stdscr, amplitude, show_banner):
+def draw_frame(stdscr, amplitude, show_banner, active_waves):
     stdscr.clear()
     height, width = stdscr.getmaxyx()
+
+    center_y = height // 2
+    # Draw expanding waves triggered by beats
+    for wave in active_waves:
+        for i, line in enumerate(WAVE_TEMPLATE):
+            y = center_y - wave.radius + i - 3
+            x = (width - len(line)) // 2
+            try:
+                stdscr.addstr(y, x, line)
+            except curses.error:
+                pass
 
     # Draw hand based on amplitude level
     if amplitude > 0.6:
