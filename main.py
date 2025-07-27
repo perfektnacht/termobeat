@@ -12,8 +12,7 @@ FPS = 30
 # Minimum amplitude considered a beat
 BEAT_THRESHOLD = 0.03  # Lowered for better sensitivity
 
-# Default starting values for user controlled wave properties
-DEFAULT_RADIUS = 3
+# Lifetime for falling slashes
 DEFAULT_TTL = 20
 
 
@@ -39,7 +38,6 @@ def main(stdscr: curses.window) -> None:
     stdscr.clear()
 
     active_slashes: list[Slash] = []
-    user_radius = DEFAULT_RADIUS
     user_ttl = DEFAULT_TTL
     message_timer = 0.0
 
@@ -47,13 +45,7 @@ def main(stdscr: curses.window) -> None:
         amplitude = get_amplitude_band()
         key = stdscr.getch()
 
-        if key == ord("+") or key == ord("="):
-            user_radius = min(user_radius + 1, 10)
-            message_timer = time.time()
-        elif key == ord("-") or key == ord("_"):
-            user_radius = max(user_radius - 1, 1)
-            message_timer = time.time()
-        elif key == ord("]"):
+        if key == ord("]"):
             user_ttl = min(user_ttl + 2, 30)
             message_timer = time.time()
         elif key == ord("["):
@@ -77,7 +69,6 @@ def main(stdscr: curses.window) -> None:
             amplitude,
             amplitude > BEAT_THRESHOLD,
             active_slashes,
-            user_radius,
             user_ttl,
             show_radius=(time.time() - message_timer < 2),
         )

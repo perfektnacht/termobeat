@@ -34,7 +34,6 @@ def audio_callback(indata, frames, time, status):
     last_amplitude = min(max(band_energy * 10, 0), 1)
 
 def get_amplitude_band():
-    global last_amplitude
     return last_amplitude
 
 # Choose device

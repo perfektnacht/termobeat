@@ -29,7 +29,6 @@ Press `Ctrl+C` to exit.
 
 ### Controls
 
-Use the following keys at runtime:
+Use the following key bindings at runtime:
 
-- `+` / `-` to adjust the starting wave radius.
-- `[` / `]` to change how long spawned waves stay on screen.
+- `[` / `]` to adjust how long falling slashes remain visible.

@@ -1,5 +1,4 @@
 import curses
-from typing import List
 
 from frames import OMARCHY_BANNER
 
@@ -18,10 +17,9 @@ class FlameParticle:
         self.ttl -= 1
 
 
-def draw_frame(stdscr, amplitude, show_banner, slashes, user_radius, user_ttl, show_radius=False):
+def draw_frame(stdscr, amplitude, show_banner, slashes, user_ttl, show_radius=False):
     stdscr.clear()
     height, width = stdscr.getmaxyx()
-    center_y, center_x = height // 2, width // 2
 
     if show_banner:
         bottom_start = height - len(OMARCHY_BANNER)
