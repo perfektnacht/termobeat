@@ -8,7 +8,14 @@ import curses
 from frames import OMARCHY_BANNER, HAND_FRAMES, WAVE_TEMPLATE
 
 
-def draw_frame(stdscr: curses.window, amplitude: float, show_banner: bool, active_waves):
+def draw_frame(
+    stdscr: curses.window,
+    amplitude: float,
+    show_banner: bool,
+    active_waves,
+    user_radius: int,
+    show_radius: bool = False,
+):
     """Render a single frame to ``stdscr``.
 
     Parameters
@@ -22,7 +29,8 @@ def draw_frame(stdscr: curses.window, amplitude: float, show_banner: bool, activ
     active_waves : Sequence[Wave]
         List of expanding wave animations. Older waves are drawn first.
 
-    Rendering order is waves, then the hand, then the banner.
+    Rendering order is waves, then the hand, then the banner. If ``show_radius``
+    is ``True`` a status message with the current wave radius is displayed.
     """
     stdscr.clear()
     height, width = stdscr.getmaxyx()
@@ -61,5 +69,9 @@ def draw_frame(stdscr: curses.window, amplitude: float, show_banner: bool, activ
             x = (width - len(line)) // 2
             y = height // 2 - len(OMARCHY_BANNER) + i - 2
             stdscr.addstr(y, x, line, curses.A_BOLD)
+
+    if show_radius:
+        radius_msg = f"Wave Radius: {user_radius}"
+        stdscr.addstr(1, (width - len(radius_msg)) // 2, radius_msg, curses.A_DIM)
 
     stdscr.refresh()
