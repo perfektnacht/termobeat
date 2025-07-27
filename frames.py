@@ -1,4 +1,16 @@
-# ASCII art frames used for the visualizer
+"""Predefined ASCII art assets for the visualizer.
+
+The constants defined here represent the ASCII art used by the
+visualization routines:
+
+``HAND_FRAMES``
+    Multiple poses of a metal hand (``\\m/``) used to reflect the current
+    volume level.
+``OMARCHY_BANNER``
+    Text banner shown on a detected beat.
+``WAVE_TEMPLATE``
+    Small ring pattern used to draw expanding wave animations.
+"""
 
 # Simple representations of a metal hand (\m/) in different poses
 HAND_FRAMES = [
