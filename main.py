@@ -11,6 +11,9 @@ import curses
 import time
 from dataclasses import dataclass
 
+# Default starting radius for new waves. Can be adjusted by user at runtime.
+DEFAULT_RADIUS = 1
+
 from audio_input import get_amplitude_band
 from visualizer import draw_frame
 
@@ -25,15 +28,17 @@ BEAT_THRESHOLD = 0.5  # Adjust this as needed
 class Wave:
     """Represents an expanding wave spawned on each detected beat."""
 
-    radius: int = 0
+    radius: int = 1
+    ttl: int = 10
 
     def update(self) -> None:
-        """Advance the wave animation by one step by growing its radius."""
+        """Advance the wave by growing outward and counting down ``ttl``."""
         self.radius += 1
+        self.ttl -= 1
 
-    def active(self, max_radius: int = 6) -> bool:
-        """Return ``True`` while ``radius`` is not beyond ``max_radius``."""
-        return self.radius <= max_radius
+    def is_alive(self) -> bool:
+        """Return ``True`` while the wave still has time to live."""
+        return self.ttl > 0
 
 
 def main(stdscr: curses.window) -> None:
@@ -45,15 +50,25 @@ def main(stdscr: curses.window) -> None:
     last_beat_time = 0.0
     show_banner = False
     active_waves: list[Wave] = []
+    user_radius = DEFAULT_RADIUS
+    message_timer = 0.0
 
     while True:
         amplitude = get_amplitude_band()
+
+        key = stdscr.getch()
+        if key == ord('+') or key == ord('='):
+            user_radius = min(user_radius + 1, 10)
+            message_timer = time.time()
+        elif key == ord('-') or key == ord('_'):
+            user_radius = max(user_radius - 1, 1)
+            message_timer = time.time()
 
         # Simple beat detection
         if amplitude > BEAT_THRESHOLD:
             show_banner = True
             last_beat_time = time.time()
-            active_waves.append(Wave())
+            active_waves.append(Wave(radius=user_radius))
 
         if time.time() - last_beat_time > 0.3:
             show_banner = False
@@ -61,9 +76,16 @@ def main(stdscr: curses.window) -> None:
         # Update wave animations
         for wave in active_waves:
             wave.update()
-        active_waves = [w for w in active_waves if w.active()]
+        active_waves = [w for w in active_waves if w.is_alive()]
 
-        draw_frame(stdscr, amplitude, show_banner, active_waves)
+        draw_frame(
+            stdscr,
+            amplitude,
+            show_banner,
+            active_waves,
+            user_radius,
+            show_radius=(time.time() - message_timer < 2),
+        )
         time.sleep(1 / FPS)
 
 
