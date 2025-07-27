@@ -14,6 +14,7 @@ def draw_frame(
     show_banner: bool,
     active_waves,
     user_radius: int,
+    user_ttl: int,
     show_radius: bool = False,
 ):
     """Render a single frame to ``stdscr``.
@@ -29,8 +30,12 @@ def draw_frame(
     active_waves : Sequence[Wave]
         List of expanding wave animations. Older waves are drawn first.
 
+    user_ttl : int
+        Time-to-live in frames for newly spawned waves.
+
     Rendering order is waves, then the hand, then the banner. If ``show_radius``
-    is ``True`` a status message with the current wave radius is displayed.
+    is ``True`` a status message with the current wave radius and TTL is
+    displayed.
     """
     stdscr.clear()
     height, width = stdscr.getmaxyx()
@@ -71,7 +76,7 @@ def draw_frame(
             stdscr.addstr(y, x, line, curses.A_BOLD)
 
     if show_radius:
-        radius_msg = f"Wave Radius: {user_radius}"
+        radius_msg = f"Wave Radius: {user_radius} | TTL: {user_ttl}"
         stdscr.addstr(1, (width - len(radius_msg)) // 2, radius_msg, curses.A_DIM)
 
     stdscr.refresh()

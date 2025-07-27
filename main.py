@@ -13,6 +13,8 @@ from dataclasses import dataclass
 
 # Default starting radius for new waves. Can be adjusted by user at runtime.
 DEFAULT_RADIUS = 1
+# Default time-to-live for new waves. Can be changed with [ and ] keys.
+DEFAULT_TTL = 10
 
 from audio_input import get_amplitude_band
 from visualizer import draw_frame
@@ -29,7 +31,7 @@ class Wave:
     """Represents an expanding wave spawned on each detected beat."""
 
     radius: int = 1
-    ttl: int = 10
+    ttl: int = DEFAULT_TTL
 
     def update(self) -> None:
         """Advance the wave by growing outward and counting down ``ttl``."""
@@ -51,6 +53,7 @@ def main(stdscr: curses.window) -> None:
     show_banner = False
     active_waves: list[Wave] = []
     user_radius = DEFAULT_RADIUS
+    user_ttl = DEFAULT_TTL
     message_timer = 0.0
 
     while True:
@@ -63,12 +66,18 @@ def main(stdscr: curses.window) -> None:
         elif key == ord('-') or key == ord('_'):
             user_radius = max(user_radius - 1, 1)
             message_timer = time.time()
+        elif key == ord(']'):
+            user_ttl = min(user_ttl + 2, 30)
+            message_timer = time.time()
+        elif key == ord('['):
+            user_ttl = max(user_ttl - 2, 2)
+            message_timer = time.time()
 
         # Simple beat detection
         if amplitude > BEAT_THRESHOLD:
             show_banner = True
             last_beat_time = time.time()
-            active_waves.append(Wave(radius=user_radius))
+            active_waves.append(Wave(radius=user_radius, ttl=user_ttl))
 
         if time.time() - last_beat_time > 0.3:
             show_banner = False
@@ -84,6 +93,7 @@ def main(stdscr: curses.window) -> None:
             show_banner,
             active_waves,
             user_radius,
+            user_ttl,
             show_radius=(time.time() - message_timer < 2),
         )
         time.sleep(1 / FPS)
