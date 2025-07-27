@@ -3,7 +3,7 @@ import math
 from typing import List
 
 from frames import OMARCHY_BANNER
-from utils import center_text
+from utils import draw_top_centered_text
 
 
 class FlameParticle:
@@ -34,13 +34,9 @@ def draw_frame(
     height, width = stdscr.getmaxyx()
     center_y, center_x = height // 2, width // 2
 
-    # Draw OMARCHY banner centered at all times
+    # Draw OMARCHY banner fixed at the top center
     for i, line in enumerate(OMARCHY_BANNER):
-        offset = i - len(OMARCHY_BANNER) // 2
-        try:
-            center_text(stdscr, line, y_offset=offset, attr=curses.A_BOLD)
-        except curses.error:
-            continue
+        draw_top_centered_text(stdscr, line, y=1 + i, attr=curses.A_BOLD)
 
     # Draw flame particles
     for flame in flames:
