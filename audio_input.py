@@ -1,84 +1,51 @@
-"""Audio input utilities for Termobeat using sounddevice.
-
-This module captures the current amplitude from the system's audio
-output. It does so by opening a sounddevice ``InputStream`` in loopback
-mode. A loopback device routes whatever is being played on the speakers
-back into an input so we can analyse it like a microphone.
-
-Operating system support varies:
-
-* **Linux** typically exposes monitor sources through PulseAudio/ALSA
-  which contain ``monitor`` in their device name.
-* **Windows** may offer "Stereo Mix" or similar loopback-capable inputs.
-* **macOS** requires third party tools (e.g. BlackHole or Soundflower)
-  to create a virtual loopback device.
-
-When imported the module automatically starts an ``InputStream`` using
-such a device, storing recent amplitudes so ``get_amplitude_band`` can be
-called by the rest of the application.
-"""
-
 import numpy as np
 import sounddevice as sd
 
-# Constants controlling the capture parameters
-# Standard CD-quality sample rate in hertz
 SAMPLE_RATE = 44100
-# Number of samples per audio block processed in the callback
 BLOCK_SIZE = 1024
-# We only care about a single channel (mono)
 CHANNELS = 1
+last_amplitude = 0.0
 
-_current_amplitude = 0.0
-
-
-def find_loopback_device() -> int:
-    """Return an input device index suitable for loopback recording.
-
-    The function searches the available devices for names that usually
-    indicate loopback capability such as ``monitor`` or ``stereo mix``.
-    ``None`` is returned if no matching device is found.
-    """
+def find_preferred_device():
     devices = sd.query_devices()
-    for idx, dev in enumerate(devices):
-        name = dev.get("name", "").lower()
-        if dev.get("max_input_channels", 0) > 0 and (
-            "monitor" in name or "loopback" in name or "stereo mix" in name
-        ):
-            return idx
-    return None
 
+    # Try to find loopback / monitor
+    for i, dev in enumerate(devices):
+        name = dev['name'].lower()
+        if "monitor" in name or "loopback" in name:
+            if dev['max_input_channels'] >= 1:
+                print(f"✅ Using loopback device: {dev['name']}")
+                return i
+
+    # Fallback to default mic
+    print("⚠️  No loopback found. Falling back to default input device.")
+    return None  # Use system default
 
 def audio_callback(indata, frames, time, status):
-    """Store the root mean square amplitude of the incoming block."""
-    global _current_amplitude
+    global last_amplitude
     if status:
-        # status is printed to stderr by sounddevice when non-empty
-        pass
-    # Compute RMS amplitude of the mono signal
-    amplitude = np.sqrt(np.mean(indata**2))
-    _current_amplitude = float(amplitude)
+        print(status)
 
+    mono_data = indata[:, 0]
+    fft_result = np.abs(np.fft.rfft(mono_data))
+    fft_norm = fft_result / np.sum(fft_result + 1e-8)
 
-# Initialize the input stream on import
-_device = find_loopback_device()
-if _device is None:
-    raise RuntimeError(
-        "No loopback-capable input device found. See module documentation "
-        "for platform specific requirements."
-    )
+    band_energy = np.mean(fft_norm[5:30])
+    last_amplitude = min(max(band_energy * 10, 0), 1)
 
+def get_amplitude_band():
+    global last_amplitude
+    return last_amplitude
+
+# Choose device
+DEVICE_INDEX = find_preferred_device()
+
+# Start the stream
 stream = sd.InputStream(
     samplerate=SAMPLE_RATE,
     blocksize=BLOCK_SIZE,
     channels=CHANNELS,
     callback=audio_callback,
-    device=_device,
+    device=DEVICE_INDEX
 )
 stream.start()
-
-
-def get_amplitude_band() -> float:
-    """Return the last measured amplitude of the loopback audio stream."""
-    return _current_amplitude
-
