@@ -17,11 +17,13 @@ def draw_frame(stdscr, amplitude, slashes, user_ttl, show_radius=False):
             except curses.error:
                 continue
 
-    # Draw static OMARCHY banner at bottom
+    # Draw static OMARCHY banner at the bottom left. The banner lines already
+    # include their own indentation so we write them starting from column zero
+    # to keep the intended alignment.
     omarchy_y = height - len(OMARCHY_BANNER) - 1
     for i, line in enumerate(OMARCHY_BANNER):
         y = omarchy_y + i
-        x = (width - len(line)) // 2
+        x = 0
         try:
             stdscr.addstr(y, x, line, curses.A_BOLD)
         except curses.error:
