@@ -10,11 +10,11 @@ from visualizer import draw_frame
 # Target frame rate of the curses UI
 FPS = 30
 # Minimum amplitude considered a beat
-BEAT_THRESHOLD = 0.03  # Lower for sensitivity
+BEAT_THRESHOLD = 0.02  # Lower for sensitivity
 
 # Default lifetime for spawned slashes
 # Increased to allow slashes to fall across most of the screen
-DEFAULT_TTL = 30
+DEFAULT_TTL = 60
 
 
 class Slash:
