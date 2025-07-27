@@ -13,7 +13,8 @@ FPS = 30
 BEAT_THRESHOLD = 0.03  # Lower for sensitivity
 
 # Default lifetime for spawned slashes
-DEFAULT_TTL = 10
+# Increased to allow slashes to fall across most of the screen
+DEFAULT_TTL = 30
 
 
 class Slash:
