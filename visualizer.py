@@ -1,4 +1,8 @@
-"""Curses based rendering helpers for Termobeat."""
+"""Curses based rendering helpers for Termobeat.
+
+The drawing routines consume the ASCII art defined in ``frames`` and
+render it to a ``curses`` window based on the current audio amplitude.
+"""
 
 import curses
 from frames import OMARCHY_BANNER, HAND_FRAMES, WAVE_TEMPLATE

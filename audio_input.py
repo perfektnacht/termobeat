@@ -22,8 +22,11 @@ import numpy as np
 import sounddevice as sd
 
 # Constants controlling the capture parameters
+# Standard CD-quality sample rate in hertz
 SAMPLE_RATE = 44100
+# Number of samples per audio block processed in the callback
 BLOCK_SIZE = 1024
+# We only care about a single channel (mono)
 CHANNELS = 1
 
 _current_amplitude = 0.0

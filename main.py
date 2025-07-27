@@ -15,7 +15,9 @@ from audio_input import get_amplitude_band
 from visualizer import draw_frame
 
 # Configurable runtime constants
+# Target frame rate of the curses UI
 FPS = 30
+# Minimum amplitude considered a beat
 BEAT_THRESHOLD = 0.5  # Adjust this as needed
 
 
@@ -26,11 +28,11 @@ class Wave:
     radius: int = 0
 
     def update(self) -> None:
-        """Advance the wave animation by one step."""
+        """Advance the wave animation by one step by growing its radius."""
         self.radius += 1
 
     def active(self, max_radius: int = 6) -> bool:
-        """Return ``True`` while the wave should remain on screen."""
+        """Return ``True`` while ``radius`` is not beyond ``max_radius``."""
         return self.radius <= max_radius
 
 
