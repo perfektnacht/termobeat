@@ -11,6 +11,7 @@ def draw_frame(stdscr, amplitude, slashes, user_ttl, show_radius=False):
     height, width = stdscr.getmaxyx()
     omarchy_y = height - len(OMARCHY_BANNER) - 1
     banner_x = (width - BANNER_WIDTH) // 2
+    rain_max_y = height - len(OMARCHY_BANNER) - 2
 
     # Draw falling slashes that do not overlap with the OMARCHY banner
     for s in slashes:

@@ -4,6 +4,8 @@ import curses
 import time
 import random
 
+from frames import OMARCHY_BANNER
+
 from audio_input import get_amplitude_band
 from visualizer import draw_frame
 
