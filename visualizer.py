@@ -1,23 +1,55 @@
 import curses
 import math
+from typing import List
+
 from frames import OMARCHY_BANNER
+from utils import center_text
 
 
-def draw_frame(stdscr, amplitude, show_banner, waves, user_radius, user_ttl, show_radius=False):
+class FlameParticle:
+    """Represents a temporary flame emoji flying out from the center."""
+
+    def __init__(self, angle: float, radius: float = 1.0, ttl: int = 4) -> None:
+        self.angle = angle
+        self.radius = radius
+        self.ttl = ttl
+
+    def update(self) -> None:
+        """Advance the particle one step outward and reduce its life."""
+        self.radius += 1
+        self.ttl -= 1
+
+
+def draw_frame(
+    stdscr,
+    amplitude: float,
+    waves: List["Wave"],
+    flames: List[FlameParticle],
+    user_radius: int,
+    user_ttl: int,
+    show_radius: bool = False,
+) -> None:
     """Draw a single visualization frame."""
     stdscr.clear()
     height, width = stdscr.getmaxyx()
     center_y, center_x = height // 2, width // 2
 
-    # Draw OMARCHY banner
-    if show_banner:
-        for i, line in enumerate(OMARCHY_BANNER):
-            y = center_y - len(OMARCHY_BANNER) + i - 2
-            x = (width - len(line)) // 2
-            try:
-                stdscr.addstr(y, x, line, curses.A_BOLD)
-            except curses.error:
-                continue
+    # Draw OMARCHY banner centered at all times
+    for i, line in enumerate(OMARCHY_BANNER):
+        offset = i - len(OMARCHY_BANNER) // 2
+        try:
+            center_text(stdscr, line, y_offset=offset, attr=curses.A_BOLD)
+        except curses.error:
+            continue
+
+    # Draw flame particles
+    for flame in flames:
+        y = center_y + int(round(math.sin(flame.angle) * flame.radius))
+        x = center_x + int(round(math.cos(flame.angle) * flame.radius))
+        try:
+            stdscr.addstr(y, x, "\U0001F525")  # flame emoji
+        except curses.error:
+            continue
 
     # Draw waves
     for wave in waves:
