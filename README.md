@@ -31,4 +31,4 @@ Press `Ctrl+C` to exit.
 
 Use the following key bindings at runtime:
 
-- `[` / `]` to adjust how long falling slashes remain visible.
+- `[` / `]` to change how long spawned slashes stay on screen.

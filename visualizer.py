@@ -3,20 +3,6 @@ import curses
 from frames import OMARCHY_BANNER
 
 
-class FlameParticle:
-    """Represents a temporary flame emoji flying out from the center."""
-
-    def __init__(self, angle: float, radius: float = 1.0, ttl: int = 4) -> None:
-        self.angle = angle
-        self.radius = radius
-        self.ttl = ttl
-
-    def update(self) -> None:
-        """Advance the particle one step outward and reduce its life."""
-        self.radius += 1
-        self.ttl -= 1
-
-
 def draw_frame(stdscr, amplitude, show_banner, slashes, user_ttl, show_radius=False):
     stdscr.clear()
     height, width = stdscr.getmaxyx()
