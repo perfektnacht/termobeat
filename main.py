@@ -2,9 +2,11 @@
 
 import curses
 import time
+import math
+import random
 
 from audio_input import get_amplitude_band
-from visualizer import draw_frame
+from visualizer import draw_frame, FlameParticle
 
 # Target frame rate of the curses UI
 FPS = 30
@@ -39,9 +41,8 @@ def main(stdscr: curses.window) -> None:
     stdscr.nodelay(True)
     stdscr.clear()
 
-    last_beat_time = 0.0
-    show_banner = False
     active_waves: list[Wave] = []
+    active_flames: list[FlameParticle] = []
     user_radius = DEFAULT_RADIUS
     user_ttl = DEFAULT_TTL
     message_timer = 0.0
@@ -64,22 +65,24 @@ def main(stdscr: curses.window) -> None:
             message_timer = time.time()
 
         if amplitude > BEAT_THRESHOLD:
-            show_banner = True
-            last_beat_time = time.time()
             active_waves.append(Wave(radius=user_radius, ttl=user_ttl))
-
-        if time.time() - last_beat_time > 0.3:
-            show_banner = False
+            for _ in range(8):
+                angle = random.uniform(0, 2 * math.pi)
+                radius = random.uniform(4, 6)
+                active_flames.append(FlameParticle(angle, radius, ttl=4))
 
         for wave in active_waves:
             wave.update()
         active_waves = [w for w in active_waves if w.is_alive()]
+        for flame in active_flames:
+            flame.update()
+        active_flames = [f for f in active_flames if f.ttl > 0]
 
         draw_frame(
             stdscr,
             amplitude,
-            show_banner,
             active_waves,
+            active_flames,
             user_radius,
             user_ttl,
             show_radius=(time.time() - message_timer < 2),
