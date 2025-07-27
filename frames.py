@@ -31,16 +31,16 @@ HAND_FRAMES = [
     ],
 ]
 
-# OMARCHY banner generated with pyfiglet using the ansi_shadow font.
-# Left indentation is preserved so the banner can be drawn starting from the
-# left edge of the screen without further adjustment.
+# OMARCHY banner generated with ``pyfiglet`` using the ``ansi_shadow`` font.
+# The strings do not include any indentation so the banner can be centered on
+# the screen at runtime.
 OMARCHY_BANNER = [
-    "    ██████╗ ███╗   ███╗ █████╗ ██████╗  ██████╗██╗  ██╗██╗   ██╗",
-    "    ██╔═══██╗████╗ ████║██╔══██╗██╔══██╗██╔════╝██║  ██║╚██╗ ██╔╝",
-    "    ██║   ██║██╔████╔██║███████║██████╔╝██║     ███████║ ╚████╔╝ ",
-    "    ██║   ██║██║╚██╔╝██║██╔══██║██╔══██╗██║     ██╔══██║  ╚██╔╝  ",
-    "    ╚██████╔╝██║ ╚═╝ ██║██║  ██║██║  ██║╚██████╗██║  ██║   ██║   ",
-    "     ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝   ╚═╝   "
+    " ██████╗ ███╗   ███╗ █████╗ ██████╗  ██████╗██╗  ██╗██╗   ██╗",
+    "██╔═══██╗████╗ ████║██╔══██╗██╔══██╗██╔════╝██║  ██║╚██╗ ██╔╝",
+    "██║   ██║██╔████╔██║███████║██████╔╝██║     ███████║ ╚████╔╝",
+    "██║   ██║██║╚██╔╝██║██╔══██║██╔══██╗██║     ██╔══██║  ╚██╔╝",
+    "╚██████╔╝██║ ╚═╝ ██║██║  ██║██║  ██║╚██████╗██║  ██║   ██║",
+    " ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝   ╚═╝",
 ]
 
 # Template for simple wave ring layers
