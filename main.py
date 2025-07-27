@@ -17,7 +17,9 @@ DEFAULT_TTL = 20
 
 
 class Slash:
-    def __init__(self, x, y, char, ttl=8):
+    """Simple falling slash character used for the visual effect."""
+
+    def __init__(self, x: int, y: int, char: str, ttl: int = 8) -> None:
         self.x = x
         self.y = y
         self.char = char

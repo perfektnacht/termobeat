@@ -1,9 +1,18 @@
 import curses
+from typing import List
 
 from frames import OMARCHY_BANNER
 
 
-def draw_frame(stdscr, amplitude, show_banner, slashes, user_ttl, show_radius=False):
+def draw_frame(
+    stdscr: curses.window,
+    amplitude: float,
+    show_banner: bool,
+    slashes: List["Slash"],
+    user_ttl: int,
+    show_radius: bool = False,
+) -> None:
+    """Draw a single visualization frame."""
     stdscr.clear()
     height, width = stdscr.getmaxyx()
 
